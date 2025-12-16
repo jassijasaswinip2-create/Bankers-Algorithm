@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Banker's Algorithm Simulator</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<script>
+function generateMatrixFields() {
+    const numProcesses = document.getElementById("num_processes").value;
+    const numResources = document.getElementById("num_resources").value;
+    const maxDiv = document.getElementById("max_matrix");
+    const allocDiv = document.getElementById("alloc_matrix");
+    
+    maxDiv.innerHTML = "";
+    allocDiv.innerHTML = "";
+
+    for (let i = 0; i < numProcesses; i++) {
+        maxDiv.innerHTML += `
+            <div class="process-input">
+                <label>Process P${i} Max (comma separated ${numResources} values):</label>
+                <input type="text" name="max_${i}" required>
+            </div>
+        `;
+        allocDiv.innerHTML += `
+            <div class="process-input">
+                <label>Process P${i} Alloc (comma separated ${numResources} values):</label>
+                <input type="text" name="alloc_${i}" required>
+            </div>
+        `;
+    }
+}
+</script>
+</head>
+<body>
+<div class="container">
+    <h1>Banker's Algorithm Simulator</h1>
+    <form method="post">
+        <label>Number of Processes:</label>
+        <input type="number" id="num_processes" name="num_processes" min="1" value="3" required onchange="generateMatrixFields()">
+
+        <label>Number of Resources:</label>
+        <input type="number" id="num_resources" name="num_resources" min="1" value="3" required onchange="generateMatrixFields()">
+
+        <label>Available Resources (comma separated):</label>
+        <input type="text" name="available" placeholder="e.g. 3,3,2" required>
+
+        <div id="max_matrix" class="matrix-section">
+            <!-- Max inputs will be generated here -->
+        </div>
+
+        <div id="alloc_matrix" class="matrix-section">
+            <!-- Allocation inputs will be generated here -->
+        </div>
+
+        <button type="submit">Check Safe State</button>
+    </form>
+</div>
+
+<script>
+generateMatrixFields(); // generate initial fields
+</script>
+</body>
+</html>

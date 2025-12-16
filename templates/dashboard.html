@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Banker's Algorithm Simulation Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: #f5f7fa;
+        }
+        h2 { color: #333; }
+        .process-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+        }
+        .process {
+            width: 80px;
+            height: 80px;
+            line-height: 80px;
+            border-radius: 50%;
+            background-color: #ccc;
+            color: white;
+            font-weight: bold;
+            transition: background-color 0.5s, transform 0.5s;
+        }
+        .running { background-color: #28a745; transform: scale(1.1); }
+        .waiting { background-color: #ffc107; }
+        .unsafe { background-color: #dc3545; }
+        button {
+            margin-top: 30px;
+            padding: 10px 20px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover { background-color: #0056b3; }
+    </style>
+</head>
+<body>
+    <h2>Banker’s Algorithm – Real-Time Simulation</h2>
+
+    {% if safe %}
+        <h3 style="color:green;">System is in a SAFE state</h3>
+        <p>Safe Sequence: {{ seq }}</p>
+    {% else %}
+        <h3 style="color:red;">System is UNSAFE — Deadlock may occur</h3>
+    {% endif %}
+
+    <div class="process-container">
+        {% for i in range(n) %}
+            <div id="P{{i}}" class="process waiting">P{{i}}</div>
+        {% endfor %}
+    </div>
+
+    {% if safe %}
+        <button onclick="startSimulation()">Start Simulation</button>
+    {% endif %}
+
+    <script>
+        const sequence = {{ seq | tojson }};
+        let index = 0;
+
+        function startSimulation() {
+            if (sequence.length === 0) return;
+            simulateStep();
+        }
+
+        function simulateStep() {
+            if (index >= sequence.length) return;
+            const procId = sequence[index];
+            const element = document.getElementById(procId);
+            element.classList.remove('waiting');
+            element.classList.add('running');
+            
+            setTimeout(() => {
+                element.classList.remove('running');
+                element.style.backgroundColor = '#28a745';
+                element.innerText = procId + " ✓";
+                index++;
+                simulateStep();
+            }, 1200); // delay between steps
+        }
+    </script>
+</body>
+</html>
